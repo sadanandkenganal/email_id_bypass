@@ -1,4 +1,4 @@
-# email_id_bypass
+# Email ID bypass module.
 
 #Installation
 
