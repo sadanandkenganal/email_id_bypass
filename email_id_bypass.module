@@ -1,0 +1,57 @@
+<?php
+
+/**
+ * @file
+ * email_id_bypass.module.
+ */
+
+/**
+ * Implements hook_form_alter().
+ */
+function email_id_bypass_form_alter(&$form, &$form_state, $form_id) {
+
+  if ($form_id == 'user_register_form' || $form_id == 'user_profile_form') {
+    $form['account']['mail']['#required'] = False;
+    if ($form_id == 'user_register_form') {
+      for ($i=0; $i<sizeof($form['#validate']); $i++) {
+        if ($form['#validate'][$i] == 'user_account_form_validate') {
+          $form['#validate'][$i]= 'custom_user_register_validate';
+          break;
+        }
+      }
+    }
+
+    if ($form_id == 'user_profile_form') {
+      for ($i=0; $i<sizeof($form['#validate']); $i++) {
+        if ($form['#validate'][$i] == 'user_account_form_validate') {
+          $form['#validate'][$i]= 'custom_user_register_validate';
+          break;
+        }
+      }
+    }
+  }
+}
+
+/*
+ * Custom function to fool the user_register_validate() function.
+ */
+function custom_user_register_validate($form, &$form_state) {
+  $numb = random_num();
+  $nomail = $numb . 'nobody.null@nowhere.lalaland.com';
+  if ($form_state['values']['mail'] == NULL)  { // Not null. Then proceed.
+    $form_state['values']['mail'] = $nomail;
+  }
+
+  // call the original validation
+  user_register_validate($form, $form_state);
+  if ($form_state['values']['mail'] == $nomail) {
+    $form_state['values']['mail'] = ''; // stuff empty back again. Fool the user_register_validate().
+  }
+}
+
+/**
+ * Custom Function to return random numbers.
+ */
+function random_num($n=5) {
+  return rand(0, pow(10, $n));
+}

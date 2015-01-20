@@ -1,0 +1,4 @@
+name = Email Id Bypass.
+description = It makes email field nonmandatory on registration and profile updation.
+core = 7.x
+version = 7.x-2.x
